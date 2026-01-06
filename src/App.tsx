@@ -1,5 +1,5 @@
 import { Header, Footer } from '@/components/layout';
-import { Hero } from '@/components/sections';
+import { Hero, Features, Pricing, Testimonials, Contact } from '@/components/sections';
 
 /**
  * Main App component
@@ -8,10 +8,13 @@ import { Hero } from '@/components/sections';
 function App() {
   return (
     <div className="flex min-h-screen flex-col">
-      <Header />
+      <Header logoText="AutoLP" ctaText="お問い合わせ" ctaHref="#contact" />
       <main className="flex-1">
         <Hero />
-        {/* Additional sections will be added here */}
+        <Features />
+        <Pricing />
+        <Testimonials id="testimonials" />
+        <Contact />
       </main>
       <Footer />
     </div>
