@@ -56,28 +56,25 @@ export function Header({
   /**
    * Handle smooth scroll to section
    */
-  const handleNavClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-      e.preventDefault();
-      const targetId = href.replace('#', '');
-      const targetElement = document.getElementById(targetId);
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const targetElement = document.getElementById(targetId);
 
-      if (targetElement) {
-        const headerOffset = 80; // Header height offset
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+    if (targetElement) {
+      const headerOffset = 80; // Header height offset
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth',
-        });
-      }
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
 
-      // Close mobile menu after navigation
-      setIsMobileMenuOpen(false);
-    },
-    []
-  );
+    // Close mobile menu after navigation
+    setIsMobileMenuOpen(false);
+  }, []);
 
   /**
    * Toggle mobile menu
@@ -96,10 +93,7 @@ export function Header({
   return (
     <>
       <motion.header
-        className={cn(
-          'fixed top-0 left-0 right-0 z-50',
-          'transition-all duration-300 ease-in-out'
-        )}
+        className={cn('fixed top-0 left-0 right-0 z-50', 'transition-all duration-300 ease-in-out')}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}

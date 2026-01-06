@@ -21,26 +21,32 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 /**
- * Form field component
+ * Form field component with accessibility support
  */
 interface FormFieldProps {
+  id: string;
   label: string;
   error?: string;
   required?: boolean;
   children: React.ReactNode;
 }
 
-function FormField({ label, error, required, children }: FormFieldProps) {
+function FormField({ id, label, error, required, children }: FormFieldProps) {
+  const errorId = error ? `${id}-error` : undefined;
   return (
     <div className="mb-4">
-      <label className="mb-2 block text-sm font-medium text-white">
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-white">
         {label}
-        {required && <span className="ml-1 text-red-400">*</span>}
+        {required && (
+          <span className="ml-1 text-red-400" aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       {children}
       {error && (
-        <p className="mt-1 flex items-center gap-1 text-sm text-red-400">
-          <AlertCircle className="h-4 w-4" />
+        <p id={errorId} role="alert" className="mt-1 flex items-center gap-1 text-sm text-red-400">
+          <AlertCircle className="h-4 w-4" aria-hidden="true" />
           {error}
         </p>
       )}
@@ -97,6 +103,7 @@ export function Contact() {
   return (
     <section
       id="contact"
+      aria-labelledby="contact-heading"
       className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-purple-600 py-20"
     >
       <Container>
@@ -107,7 +114,7 @@ export function Contact() {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
+          <h2 id="contact-heading" className="mb-4 text-3xl font-bold text-white md:text-4xl">
             今すぐ始めよう
           </h2>
           <p className="mb-10 text-lg text-blue-100">
@@ -121,9 +128,7 @@ export function Contact() {
               className="rounded-2xl bg-white/10 p-8 backdrop-blur-sm"
             >
               <CheckCircle className="mx-auto mb-4 h-16 w-16 text-green-400" />
-              <h3 className="mb-2 text-xl font-semibold text-white">
-                送信完了しました
-              </h3>
+              <h3 className="mb-2 text-xl font-semibold text-white">送信完了しました</h3>
               <p className="text-blue-100">
                 お問い合わせありがとうございます。担当者より2営業日以内にご連絡いたします。
               </p>
@@ -145,47 +150,79 @@ export function Contact() {
               className="rounded-2xl bg-white/10 p-8 backdrop-blur-sm"
             >
               <div className="grid gap-4 md:grid-cols-2">
-                <FormField label="お名前" required error={errors.name?.message}>
+                <FormField id="contact-name" label="お名前" required error={errors.name?.message}>
                   <input
+                    id="contact-name"
                     type="text"
                     placeholder="山田 太郎"
+                    autoComplete="name"
+                    aria-required="true"
+                    aria-invalid={!!errors.name}
+                    aria-describedby={errors.name ? 'contact-name-error' : undefined}
                     className={inputClass}
                     {...register('name')}
                   />
                 </FormField>
 
-                <FormField label="メールアドレス" required error={errors.email?.message}>
+                <FormField
+                  id="contact-email"
+                  label="メールアドレス"
+                  required
+                  error={errors.email?.message}
+                >
                   <input
+                    id="contact-email"
                     type="email"
                     placeholder="example@email.com"
+                    autoComplete="email"
+                    aria-required="true"
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'contact-email-error' : undefined}
                     className={inputClass}
                     {...register('email')}
                   />
                 </FormField>
               </div>
 
-              <FormField label="電話番号" error={errors.phone?.message}>
+              <FormField id="contact-phone" label="電話番号" error={errors.phone?.message}>
                 <input
+                  id="contact-phone"
                   type="tel"
                   placeholder="03-1234-5678"
+                  autoComplete="tel"
+                  aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? 'contact-phone-error' : undefined}
                   className={inputClass}
                   {...register('phone')}
                 />
               </FormField>
 
-              <FormField label="お問い合わせ内容" required error={errors.message?.message}>
+              <FormField
+                id="contact-message"
+                label="お問い合わせ内容"
+                required
+                error={errors.message?.message}
+              >
                 <textarea
+                  id="contact-message"
                   rows={4}
                   placeholder="ご質問やご要望をお書きください"
+                  aria-required="true"
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? 'contact-message-error' : undefined}
                   className={cn(inputClass, 'resize-none')}
                   {...register('message')}
                 />
               </FormField>
 
               <div className="mb-6">
-                <label className="flex items-start gap-3">
+                <label htmlFor="contact-privacy" className="flex items-start gap-3">
                   <input
+                    id="contact-privacy"
                     type="checkbox"
+                    aria-required="true"
+                    aria-invalid={!!errors.privacy}
+                    aria-describedby={errors.privacy ? 'contact-privacy-error' : undefined}
                     className="mt-1 h-4 w-4 rounded border-white/20 bg-white/10 text-primary-600 focus:ring-white/20"
                     {...register('privacy')}
                   />
@@ -194,11 +231,16 @@ export function Contact() {
                       プライバシーポリシー
                     </a>
                     に同意します
+                    <span className="sr-only">（必須）</span>
                   </span>
                 </label>
                 {errors.privacy && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-400">
-                    <AlertCircle className="h-4 w-4" />
+                  <p
+                    id="contact-privacy-error"
+                    role="alert"
+                    className="mt-1 flex items-center gap-1 text-sm text-red-400"
+                  >
+                    <AlertCircle className="h-4 w-4" aria-hidden="true" />
                     {errors.privacy.message}
                   </p>
                 )}

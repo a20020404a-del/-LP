@@ -168,8 +168,10 @@ export function Testimonials({ id }: TestimonialsSectionProps) {
                   {testimonial.avatar ? (
                     <img
                       src={testimonial.avatar}
-                      alt={testimonial.name}
+                      alt={`${testimonial.name}のプロフィール画像`}
                       className="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-primary-100 text-primary-600">

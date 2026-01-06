@@ -17,5 +17,19 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    // Performance optimizations
+    rollupOptions: {
+      output: {
+        // Code splitting configuration
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          animations: ['framer-motion'],
+          forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
+          icons: ['lucide-react'],
+        },
+      },
+    },
+    // Minification - use esbuild (default) for better compatibility
+    minify: 'esbuild',
   },
 });
